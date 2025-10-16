@@ -1,0 +1,97 @@
+
+<svg id="background" width="400px" height="440px" version="1.1" xmlns="http://www.w3.org/2000/svg">
+
+<style>
+    :root {
+      --ground_y: 70%;
+      --tank_x: 10%;
+      --tank_w: 40%;
+      --tank_h: 50%;
+      --pipe_w: 10px;
+      --pipe_in_y: 10%;
+      --circle-y: 100;
+      --rect-x: 50;
+      --rect-y: 120;
+    }
+
+    .ground {
+       y: var(--ground_y);
+    }
+    .circle {
+      cx: var(--circle-x);
+      cy: var(--circle-y);
+    }
+
+    .rect {
+      x: var(--rect-x);
+      y: var(--rect-y);
+    }
+
+    .tank1 {
+      x: var(--tank_x);
+      y: calc(var(--ground_y) - var( --tank_h));
+      height: var(--tank_h);
+      width: var(--tank_w);
+    }
+
+    .tank2 {
+      cx: calc(var(--tank_x) + var(--tank_w)/2);
+      cy: calc(var(--ground_y) - var( --tank_h));
+      rx: calc(var(--tank_w) / 2);
+      ry: 5%;
+    }
+
+    .tank3 {
+      cx: calc(var(--tank_x) + var(--tank_w)/2);
+      cy: var(--ground_y);
+      rx: calc(var(--tank_w) / 2);
+      ry: 5%;
+    }
+
+     .tank4 {
+      x: calc(var(--tank_x));
+      y: calc((var(--ground_y)) - (var(--tank_h) * 0.15));
+      height: calc(var(--tank_h) * 0.15);
+      width: var(--tank_w);
+    }
+
+    .inputLineH{
+      x: 0;
+      y: var(--pipe_in_y);
+      height: var(--pipe_w);
+      width: calc(var(--tank_x) + 2%);
+    }
+
+    .inputLineV{
+        x: calc(var(--tank_x) + 2%);
+        y: var(--pipe_in_y);
+        height: calc(var(--ground_y) - var( --tank_h) - var(--pipe_in_y));
+        width: var(--pipe_w);
+      }
+
+    .outputLineH{
+        x: calc(var(--tank_x) + var(--tank_w) );
+        y: calc(var(--ground_y) - 2%);
+        height: var(--pipe_w);
+        width: calc(100% - var(--tank_x) - var(--tank_w) + 10%);
+      }
+  </style>
+
+  <!-- Aplicação dos parâmetros -->
+    <rect width="100%" height="100%" fill="rgb(38,245,236)" />
+    <rect class="ground"  width="100%" height="30%" fill="rgb(240,134,80)" />
+
+    <rect class="tank1"  stroke="black" stroke-width="2" fill="gray" />
+    <ellipse class="tank2" stroke="black" stroke-width="2" fill="gray"/>
+    <ellipse class="tank3" stroke="black" stroke-width="2" fill="gray"/>
+     <rect class="tank4"  fill="gray" />
+
+     <rect class="inputLineH"  stroke="black" stroke-width="2" fill="gray" />
+     <rect class="inputLineV"  stroke="black" stroke-width="2" fill="gray" />
+     <rect class="outputLineH"  stroke="black" stroke-width="2" fill="gray" />
+
+
+
+
+
+</svg>
