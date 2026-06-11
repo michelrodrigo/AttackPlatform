@@ -257,7 +257,7 @@ def reset_simulation(n_clicks_reset):
      Input('output_valve_open_button', "n_clicks"),
      Input('output_valve_close_button', "n_clicks")]
 )
-def control_input_valve(n_clicks_open_input, n_clicks_close_input, n_clicks_open_output, n_clicks_close_output):
+def control_valve(n_clicks_open_input, n_clicks_close_input, n_clicks_open_output, n_clicks_close_output):
     ctx = dash.callback_context
     if not ctx.triggered:
         raise dash.exceptions.PreventUpdate

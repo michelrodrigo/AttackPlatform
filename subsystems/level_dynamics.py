@@ -42,6 +42,9 @@ class LevelDynamics(threading.Thread):
     def reset_simulation(self):
         self.simulation_running = False
         self.level = initial_tank_level
+        self.input_valve.reset()
+        self.output_valve.reset()
+
 
     def run(self):
         while not self.stop_event.is_set():

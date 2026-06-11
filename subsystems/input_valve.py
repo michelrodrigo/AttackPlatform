@@ -33,7 +33,9 @@ class InputValve(threading.Thread):
         # Cria o autômato e registra os estados e eventos
         self.automaton = Automaton(
             [(s_input_valve_closed, e_open_input_valve, s_input_valve_open),
-             (s_input_valve_open, e_close_input_valve, s_input_valve_closed)],
+             (s_input_valve_open, e_close_input_valve, s_input_valve_closed),
+             (s_input_valve_open, e_sim_reset, s_input_valve_closed),
+             (s_input_valve_closed, e_sim_reset, s_input_valve_closed)],
             s_input_valve_closed, "Input Valve")
 
         self.automaton.set_action(s_input_valve_closed, self.close)
@@ -82,4 +84,8 @@ class InputValve(threading.Thread):
         self.input_flow = 0
         if print_input_valve:
             print(CSUB+"Input Valve closed."+CEND)
+
+    def reset(self):
+        self.state = "closed"
+        self.input_flow = 0
 

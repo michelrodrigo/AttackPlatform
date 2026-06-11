@@ -32,7 +32,7 @@ class OutputValve(threading.Thread):
         self.automaton = Automaton(
             [(s_output_valve_closed, e_open_output_valve, s_output_valve_open),
              (s_output_valve_open, e_close_output_valve, s_output_valve_closed)],
-            s_output_valve_closed, "Output Valve")
+            s_output_valve_closed,  "Output Valve")
 
         self.automaton.set_action(s_output_valve_closed, self.close)
         self.automaton.set_action(s_output_valve_open, self.open)
@@ -81,3 +81,6 @@ class OutputValve(threading.Thread):
         if print_output_valve:
             print(CSUB+"Output Valve closed."+CEND)
 
+    def reset(self):
+        self.state = "closed"
+        self.output_flow = 0

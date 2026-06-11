@@ -34,7 +34,8 @@ class Automaton:
 
     def __init__(self, transitions, initial_state, name):
         self.automaton = dfa([(s.state, e.event, d.state) for (s, e, d) in transitions], initial_state.state, name)
-        self.current_state = initial_state
+        self.initial_state = initial_state
+        self.current_state = self.initial_state
         if isinstance(transitions, list):
             self.transitions = {(t[0], t[1]): t[2] for t in transitions}
         else:
@@ -94,3 +95,12 @@ class Automaton:
         :return: True if the event is defined, False, otherwise
         """
         return any(evt == e for (_, evt) in self.transitions.keys())
+
+    def reset(self):
+        """
+        Resets the automaton to its initial state. It also calls the action function of the initial state. This avoids
+        having to manually add a transition in every state with a reset event.
+        :return: True if the event is defined, False, otherwise
+        """
+        self.current_state = self.initial_state
+        self.actions[self.current_state]()

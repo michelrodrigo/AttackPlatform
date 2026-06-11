@@ -7,7 +7,9 @@ from controller import Controller
 from subsystems import register_subsystems
 from interface.app import run
 
-#TODO fazer um botão de reset na interface -  criar um evento rst e colocar nos autômatos
+
+
+# criar a dinâmica de temperatura.
 
 
 

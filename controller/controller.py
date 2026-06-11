@@ -113,7 +113,12 @@ class Controller:
                         "data": commands2events.get(cmd)
                     }
                     self.bus.send_message(message)
-                    print(f"{CGREEN2}Message sent through the bus: {CEND}{message}")
+
+                    event = message["data"]
+                    print(f"{CGREEN2}Message sent through the bus: {CEND}"
+                          f"source={message['source']} "
+                          f"type={message['type']} "
+                          f"event={event.name}")
 
             except queue.Empty:
                 pass
@@ -156,7 +161,7 @@ class Controller:
             if source == "LevelSensor":
                 self.level = data
         elif msg_type == "discrete_event":
-            print(f"{CGREEN}Event from {source}: {data}{CEND}")
+            print(f"{CGREEN}Event from {source}: {data.name}{CEND}")
         #else:
             #print(f"Mensagem desconhecida: {message}")
 
