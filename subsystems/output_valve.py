@@ -31,7 +31,9 @@ class OutputValve(threading.Thread):
         # Cria o autômato e registra os estados e eventos
         self.automaton = Automaton(
             [(s_output_valve_closed, e_open_output_valve, s_output_valve_open),
-             (s_output_valve_open, e_close_output_valve, s_output_valve_closed)],
+             (s_output_valve_open, e_close_output_valve, s_output_valve_closed),
+             (s_output_valve_open, e_sim_reset, s_output_valve_closed),
+             (s_output_valve_closed, e_sim_reset, s_output_valve_closed)],
             s_output_valve_closed,  "Output Valve")
 
         self.automaton.set_action(s_output_valve_closed, self.close)

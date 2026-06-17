@@ -22,6 +22,10 @@ e_sim_running = Event("simulation_running", controllable=False)
 e_sim_stop = Event("simulation_stop", controllable=False)
 e_sim_reset = Event("simulation_reset", controllable=False)
 
+# Events related to the Mixer
+e_mixer_on = Event("mixer_on", controllable=True)
+e_mixer_off = Event("mixer_off", controllable=True)
+
 # Reset Event
 e_rst = Event("rst", controllable=False)
 
@@ -31,6 +35,8 @@ commands2events = {
     "Input Valve Close": e_close_input_valve,
     "Output Valve Open": e_open_output_valve,
     "Output Valve Close": e_close_output_valve,
+    "Mixer On": e_mixer_on,
+    "Mixer Off": e_mixer_off,
     "Simulation Running": e_sim_running,
     "Simulation Stop": e_sim_stop,
     "Simulation Reset": e_sim_reset
