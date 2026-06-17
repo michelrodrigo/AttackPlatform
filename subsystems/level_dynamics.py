@@ -44,6 +44,9 @@ class LevelDynamics(threading.Thread):
         self.level = initial_tank_level
         self.input_valve.reset()
         self.output_valve.reset()
+        self.bus.send_message({"source": "LevelSensor", "type": "variable_update", "data": self.level})
+
+
 
 
     def run(self):
