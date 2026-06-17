@@ -19,17 +19,25 @@ The AttackPlatform simulates an industrial control system (ICS) composed of:
 ```mermaid
 flowchart TD
 
-    UI[Dash HMI Interface]
+    subgraph Interface
+        UI[Dash HMI Interface]
+        OPC_CLIENT[OPC UA Client]
+    end
 
-    OPC_CLIENT[OPC UA Client]
+    subgraph Controller
+        direction TB
+        OPC_SERVER[OPC UA Server]
+        CONTROLLER[Controller<br/>Supervisory Control]
+        OUTPUT_QUEUE[Output Queue]
+        INPUT_QUEUE[Input Queue]
 
-    CONTROLLER[Controller<br/>Supervisory Control]
+        direction TB
+        OPC_SERVER ~~~ CONTROLLER
+        CONTROLLER ~~~ INPUT_QUEUE
 
-    OPC_SERVER[OPC UA Server]
-
-    SUPERVISOR[Supervisor Automata]
-
-    QUEUE[Command Queue]
+        direction LR
+        INPUT_QUEUE ~~~ OUTPUT_QUEUE
+    end  
 
     BUS[Industrial Message Bus]
 
@@ -38,7 +46,7 @@ flowchart TD
     LD[Level Dynamics]
     LS[Level Sensor]
 
-    UI --> OPC_CLIENT
+    UI <--> OPC_CLIENT
 
     OPC_CLIENT --> OPC_SERVER
 
