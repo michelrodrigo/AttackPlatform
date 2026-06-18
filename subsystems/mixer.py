@@ -39,6 +39,30 @@ class Mixer(threading.Thread):
 
         #todo: finish implementing the mixer
 
+    def start(self):
+        super().start()
+        print(f"{CSUB}{self.name} thread initialized.{CEND}")
+
+    #while the thread is running, the mixer has to keep checking if a new message arrives
+    #from the bus. When a message arrives, it will verify if it is relevant to it. In
+    #the positive case, it will process the event.
+    def run(self):
+        while not self.stop_event.is_set():
+            if self.bus.wait_for_new_message(self.name, timeout=1):
+                messages = self.bus.get_messages(self.name)
+                controller_messages = [msg for msg in messages if msg.get("source") == "Controller"]
+                for message in controller_messages:
+                    if message.get("source") == "Controller" and message.get("type") == "command":
+                        command_value = message.get("data")
+                        if command_value != self.last_command:
+                            if self.automaton.is_defined(command_value):
+                                self.last_command = command_value
+                                if self.automaton.is_feasible(command_value):
+                                    self.automaton.trigger_event(command_value)
+
+            time.sleep(0.5)
+        if print_mixer:
+            print(f"{CSUB}{self.name} thread stopped.{CEND}")
 
     def stop(self):
             print(CSUB + "Mixer stopped." + CEND)

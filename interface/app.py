@@ -177,7 +177,35 @@ app.layout = dbc.Container(
                                         "left": "250px",  # Adjust
                                         "top": "315px",   # Adjust
                                     }
+                                ),
+                                #representation of mixer
+                                html.Div(
+                                    id="mixer-motor",
+                                    style={
+                                        "width": "25px",
+                                        "height": "40px",
+                                        "background-color": "gray",
+                                        "border": "2px solid black",
+                                        "border-radius": "5px",
+                                        "position": "absolute",
+                                        "left": "130px",
+                                        "top": "60px",
+                                    }
+                                ),
+                                #representation of motor shaft
+                                html.Div(
+                                    id="mixer-shaft",
+                                    style={
+                                        "width": "4px",
+                                        "height": "15px",
+                                        "background-color": "black",
+                                        "position": "absolute",
+                                        "left": "140px",
+                                        "top": "100px",
+                                    }
                                 )
+                                #todo: finalizar a implementação do mixer na interface. fazer mudar de cor, colocar um botão e colocar um painel de monitoramento
+                                #todo: fazer o callback para o botão e fazer a atualização da cor
                             ]
                         ),
                         className="mb-4",

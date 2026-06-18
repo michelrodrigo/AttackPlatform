@@ -22,3 +22,4 @@ DELTA_T = 1  # time interval (s)
 
 print_input_valve = True
 print_output_valve = True
+print_mixer = True
