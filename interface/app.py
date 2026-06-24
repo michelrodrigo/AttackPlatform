@@ -5,6 +5,9 @@ from opcua import Client
 import os
 import dash_bootstrap_components as dbc
 import logging
+
+from prompt_toolkit.shortcuts import button_dialog
+
 from .nodes_adresses import *
 from utils.colors import *
 from colorama import Fore, Back, Style
@@ -64,6 +67,9 @@ app.layout = dbc.Container(
                         dbc.Row("Output Valve", style={"padding": "10px"}),
                         dbc.Button("Open", id="output_valve_open_button", n_clicks=0, color="success", className="me-2", style={"width": "70px", "height": "40px"}),
                         dbc.Button("Close", id="output_valve_close_button", n_clicks=0, color="danger", style={"width": "70px", "height": "40px"}),
+                        dbc.Row("Mixer", style={"padding": "10px"}),
+                        dbc.Button("On", id="mixer_on_button", n_clicks=0, color="success", className="me-2", style={"width": "70px", "height": "40px"}),
+                        dbc.Button("Off", id="mixer_off_button", n_clicks=0, color="danger", style={"width": "70px", "height": "40px"}),
                         html.Div(id="action-feedback", className="mt-3 text-info"),
 
                     ],
@@ -204,8 +210,8 @@ app.layout = dbc.Container(
                                         "top": "100px",
                                     }
                                 )
-                                #todo: finalizar a implementação do mixer na interface. fazer mudar de cor, colocar um botão e colocar um painel de monitoramento
-                                #todo: fazer o callback para o botão e fazer a atualização da cor
+                                #todo: verificar o pq o nível parou de atualizar
+                                #todo: parece que o comando de ligar/desligar o mixer não está chegando no subsistema (mensagem do barramento)
                             ]
                         ),
                         className="mb-4",
@@ -283,9 +289,11 @@ def reset_simulation(n_clicks_reset):
     [Input('input_valve_open_button', "n_clicks"),
      Input('input_valve_close_button', "n_clicks"),
      Input('output_valve_open_button', "n_clicks"),
-     Input('output_valve_close_button', "n_clicks")]
+     Input('output_valve_close_button', "n_clicks"),
+     Input('mixer_on_button', "n_clicks"),
+     Input('mixer_off_button', "n_clicks")]
 )
-def control_valve(n_clicks_open_input, n_clicks_close_input, n_clicks_open_output, n_clicks_close_output):
+def control_systems(n_clicks_open_input, n_clicks_close_input, n_clicks_open_output, n_clicks_close_output, n_clicks_mixer_on, n_clicks_mixer_off):
     ctx = dash.callback_context
     if not ctx.triggered:
         raise dash.exceptions.PreventUpdate
@@ -323,6 +331,18 @@ def control_valve(n_clicks_open_input, n_clicks_close_input, n_clicks_open_outpu
             return "Output Valve closed."
         except Exception as e:
             return f"Error while closing Output Valve : {e}"
+    elif button_id == "mixer_on_button":
+        try:
+            client.set_value(mixer_on_node_address, True)
+            return "Mixer ON."
+        except Exception as e:
+            return f"Error while turning mixer ON: {e}"
+    elif button_id == "mixer_off_button":
+        try:
+            client.set_value(mixer_off_node_address, True)
+            return "Mixer OFF."
+        except Exception as e:
+            return f"Error while turning mixer OFF: {e}"
     return "No action."
 
 @app.callback(
@@ -471,6 +491,35 @@ def update_output_valve(n_intervals):
         "left": "250px",  # Adjust
         "top": "315px",   # Adjust
     }
+
+# Callback to updated mixer status through OPC UA
+@app.callback(
+    Output("mixer-motor", "style"),
+    Input("interval-component", "n_intervals"),
+)
+def update_mixer(n_intervals):
+    try:
+        # Reads mixer status
+        mixer_state = client.read_value(mixer_node_address)
+    except Exception as e:
+        print(f"Error while reading mixer status: {e}")
+        mixer_state = False
+
+    # If mixer is ON, its color is set to green, otherwise is set to gray
+    color = "green" if mixer_state else "gray"
+
+    # Defines the style for position, changing only the color
+    return {
+        "width": "25px",
+        "height": "40px",
+        "background-color": color,
+        "border": "2px solid black",
+        "border-radius": "5px",
+        "position": "absolute",
+        "left": "130px",
+        "top": "60px",
+    }
+
 
 @app.callback(
     Output("debug-output", "children"),

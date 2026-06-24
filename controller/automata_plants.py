@@ -63,7 +63,7 @@ class OutputValve(ValveAutomaton):
 
 class OnOffAutomaton(Automaton):
 
-    def __init__(self, controller, type): ##type: "SimControl"
+    def __init__(self, controller, type): ##type: "SimControl", "Mixer"
         self.controller = controller
         self.type = type
         # Creates the states of the automaton
@@ -73,6 +73,9 @@ class OnOffAutomaton(Automaton):
         if self.type == "SimControl":
             evs = [e_sim_running, e_sim_stop, e_sim_reset]
             name = "Simulation Control"
+        elif self.type == "Mixer":
+            evs = [e_mixer_on, e_mixer_off, e_sim_reset]
+            name = "Mixer"
 
         # Creates the automaton
         super().__init__(
@@ -88,12 +91,15 @@ class OnOffAutomaton(Automaton):
 
     def on(self):
         if self.type == "SimControl":
-            self.controller.stop_simulation()
-
+            self.controller.start_simulation()
+        elif self.type == "Mixer":
+            self.controller.turn_mixer_on()
 
     def off(self):
         if self.type == "SimControl":
             self.controller.stop_simulation()
+        elif self.type == "Mixer":
+            self.controller.turn_mixer_off()
 
 class SimulationControl(OnOffAutomaton):
 
@@ -101,6 +107,11 @@ class SimulationControl(OnOffAutomaton):
         super().__init__(controller, "SimControl")
         self.name = "Simulation Control"
 
+class Mixer(OnOffAutomaton):
+
+    def __init__(self, controller):
+        super().__init__(controller, "Mixer")
+        self.name = "Mixer"
 
 class SensorAutomaton(Automaton):
     def __init__(self, controller, type):  ##type: "Low Level", "High Level", "Extra High Level", "Temperature"

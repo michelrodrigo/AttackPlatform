@@ -50,6 +50,9 @@ class Controller:
         self.output_valve_open = False
         self.output_valve_command = False
 
+        self.mixer_on = False
+        self.mixer_on_command = False
+
         self.low_level_sensor = False
         self.high_level_sensor = False
         self.extra_high_level_sensor = False
@@ -67,6 +70,7 @@ class Controller:
         self.supervisory_control.add_automaton("High Level Sensor", HighLevelSensor(self))
         self.supervisory_control.add_automaton("Extra High Level Sensor", ExtraHighLevelSensor(self))
         self.supervisory_control.add_automaton("Simulation Control", SimulationControl(self))
+        self.supervisory_control.add_automaton("Simulation Control", Mixer(self))
 
     def start(self):
         """Starts the controller threads"""
@@ -323,6 +327,14 @@ class Controller:
     def close_output_valve(self):
         self.output_valve_open = False
         self.opc_server.variables["Output Valve"].set_value(self.output_valve_open)
+
+    def turn_mixer_on(self):
+        self.mixer_on = True
+        self.opc_server.variables["Mixer"].set_value(self.mixer_on)
+
+    def turn_mixer_off(self):
+        self.mixer_on = False
+        self.opc_server.variables["Mixer"].set_value(self.mixer_on)
 
     def trigger_low_level_sensor(self):
         self.low_level_sensor = True
