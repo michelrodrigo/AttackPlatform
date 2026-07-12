@@ -42,6 +42,10 @@ class OpcServer:
 
         self.variables["Simulation Reset"] = self.commands_node.add_variable(self.idx, "Simulation Reset", False)
 
+        self.variables["Mixer"] = self.status_node.add_variable(self.idx, "Mixer", False)
+        self.variables["Mixer On"] = self.commands_node.add_variable(self.idx, "Mixer On", False)
+        self.variables["Mixer Off"] = self.commands_node.add_variable(self.idx, "Mixer Off", False)
+
         # Permitir escrita para variáveis que podem ser controladas
         for var_name, var in self.variables.items():
             var.set_writable()
