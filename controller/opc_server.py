@@ -46,6 +46,11 @@ class OpcServer:
         self.variables["Mixer On"] = self.commands_node.add_variable(self.idx, "Mixer On", False)
         self.variables["Mixer Off"] = self.commands_node.add_variable(self.idx, "Mixer Off", False)
 
+        self.variables["Heater"] = self.status_node.add_variable(self.idx, "Heater", False)
+        self.variables["Heater On"] = self.commands_node.add_variable(self.idx, "Heater On", False)
+        self.variables["Heater Off"] = self.commands_node.add_variable(self.idx, "Heater Off", False)
+        self.variables["Heater Power"] = self.sensors_node.add_variable(self.idx, "Heater Power", 0)
+
         # Permitir escrita para variáveis que podem ser controladas
         for var_name, var in self.variables.items():
             var.set_writable()

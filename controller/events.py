@@ -26,6 +26,10 @@ e_sim_reset = Event("simulation_reset", controllable=False)
 e_mixer_on = Event("mixer_on", controllable=True)
 e_mixer_off = Event("mixer_off", controllable=True)
 
+# Events related to the Heater
+e_heater_on = Event("heater_on", controllable=True)
+e_heater_off = Event("heater_off", controllable=True)
+
 # Reset Event
 e_rst = Event("rst", controllable=False)
 
@@ -37,6 +41,8 @@ commands2events = {
     "Output Valve Close": e_close_output_valve,
     "Mixer On": e_mixer_on,
     "Mixer Off": e_mixer_off,
+    "Heater On": e_heater_on,
+    "Heater Off": e_heater_off,
     "Simulation Running": e_sim_running,
     "Simulation Stop": e_sim_stop,
     "Simulation Reset": e_sim_reset

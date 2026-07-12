@@ -3,6 +3,7 @@ input_valve_node_address = "ns=2;i=12"
 output_valve_node_address = "ns=2;i=13"
 tank_overflow = "ns=2;i=17"
 mixer_node_address = "ns=2;i=19"
+heater_node_address = "ns=2;i=22"
 
 # Commands Node
 input_valve_close_node_address = "ns=2;i=9"
@@ -14,6 +15,8 @@ simulation_stop_address = "ns=2;i=5"
 simulation_reset_node_address = "ns=2;i=18"
 mixer_on_node_address = "ns=2;i=20"
 mixer_off_node_address =  "ns=2;i=21"
+heater_on_node_address = "ns=2;i=23"
+heater_off_node_address = "ns=2;i=24"
 
 
 # Sensors Node
@@ -22,6 +25,6 @@ level_node_address = "ns=2;i=7"
 low_level = "ns=2;i=14"
 high_level = "ns=2;i=15"
 extra_high_level = "ns=2;i=16"
-
+heater_power_node_address = "ns=2;i=25"
 
 

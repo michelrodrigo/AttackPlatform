@@ -76,6 +76,9 @@ class OnOffAutomaton(Automaton):
         elif self.type == "Mixer":
             evs = [e_mixer_on, e_mixer_off, e_sim_reset]
             name = "Mixer"
+        elif self.type == "Heater":
+            evs = [e_heater_on, e_heater_off, e_sim_reset]
+            name = "Heater"
 
         # Creates the automaton
         super().__init__(
@@ -112,6 +115,13 @@ class Mixer(OnOffAutomaton):
     def __init__(self, controller):
         super().__init__(controller, "Mixer")
         self.name = "Mixer"
+
+
+class Heater(OnOffAutomaton):
+
+    def __init__(self, controller):
+        super().__init__(controller, "Heater")
+        self.name = "Heater"
 
 class SensorAutomaton(Automaton):
     def __init__(self, controller, type):  ##type: "Low Level", "High Level", "Extra High Level", "Temperature"
