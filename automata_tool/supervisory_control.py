@@ -34,6 +34,10 @@ class SupervisoryControl:
         self.supervisors.append(supervisor)
 
     def add_automaton(self, subsystem, automaton):
+        if subsystem in self.automata:
+            raise ValueError(
+                f"Automaton '{subsystem}' already exists."
+            )
         self.automata[subsystem] = automaton
 
     def get_feasible_events(self, events):

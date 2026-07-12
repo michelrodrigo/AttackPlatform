@@ -70,7 +70,7 @@ class Controller:
         self.supervisory_control.add_automaton("High Level Sensor", HighLevelSensor(self))
         self.supervisory_control.add_automaton("Extra High Level Sensor", ExtraHighLevelSensor(self))
         self.supervisory_control.add_automaton("Simulation Control", SimulationControl(self))
-        self.supervisory_control.add_automaton("Simulation Control", Mixer(self))
+        self.supervisory_control.add_automaton("Mixer", Mixer(self))
 
     def start(self):
         """Starts the controller threads"""
@@ -199,6 +199,7 @@ class Controller:
 
                     ev = commands2events.get(cmd)
                     automata = self.supervisory_control.find_automata_with_event(ev)
+
 
                     for a in automata:
                         print(f"{CSUP}Automaton {a.name}{CEND}")
