@@ -4,6 +4,8 @@ from .level_dynamics import LevelDynamics
 from .temp_dynamics import TempDynamics
 from .input_valve import InputValve
 from .output_valve import OutputValve
+from .mixer import Mixer
+from .heater import Heater
 from .ids import IDS
 
 # Função para registrar subsistemas
@@ -14,10 +16,12 @@ def register_subsystems(controller, stop_event, bus):
     levelsensor = LevelSensor(stop_event, bus, leveldynamics)
     #tempsensor = TempSensor(stop_event, controller, bus)
     #temperaturedynamics = TempDynamics(stop_event, controller, bus)
+    mixer = Mixer(stop_event, controller, bus)
+    heater = Heater(stop_event, controller, bus)
     ids = IDS(stop_event, controller, bus)
 
     return [
-        levelsensor, leveldynamics, ids, inputvalve, outputValve  #, tempsensor, temperaturedynamics
+        levelsensor, leveldynamics, ids, inputvalve, outputValve, mixer, heater  #, tempsensor, temperaturedynamics
     ]
 
 __all__ = ["register_subsystems"]

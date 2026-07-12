@@ -53,6 +53,9 @@ class Controller:
         self.mixer_on = False
         self.mixer_on_command = False
 
+        self.heater_on = False
+        self.heater_on_command = False
+
         self.low_level_sensor = False
         self.high_level_sensor = False
         self.extra_high_level_sensor = False
@@ -61,6 +64,7 @@ class Controller:
 
         # Process variables
         self.level = 0
+        self.heater_power = 0
 
         # Defines the automata for the supervisory control
         self.supervisory_control = SupervisoryControl(mode="manual")
@@ -71,6 +75,7 @@ class Controller:
         self.supervisory_control.add_automaton("Extra High Level Sensor", ExtraHighLevelSensor(self))
         self.supervisory_control.add_automaton("Simulation Control", SimulationControl(self))
         self.supervisory_control.add_automaton("Mixer", Mixer(self))
+        self.supervisory_control.add_automaton("Heater", Heater(self))
 
     def start(self):
         """Starts the controller threads"""
@@ -164,6 +169,8 @@ class Controller:
             print(f"{CGREEN}State {source}: {data}{CEND}")
             if source == "LevelSensor":
                 self.level = data
+            if source == "HeaterPower":
+                self.heater_power = data
         elif msg_type == "discrete_event":
             print(f"{CGREEN}Event from {source}: {data.name}{CEND}")
         #else:
@@ -264,12 +271,16 @@ class Controller:
             #temperature = self.request_subsystem_state("TemperatureTransmitter")
             new_temp = round(random.uniform(15.0, 30.0), 2)
             new_level = self.level #round(random.uniform(40.0, 60.0), 2)
+            new_heater_power = self.heater_power
 
             if new_level is not None:
                 self.opc_server.variables["Level"].set_value(new_level)
 
             if new_temp is not None:
                 self.opc_server.variables["Temperature"].set_value(new_temp)
+
+            if new_heater_power is not None:
+                self.opc_server.variables["Heater Power"].set_value(new_heater_power)
 
             if new_level >= 100:
                 self.opc_server.variables["Tank Overflow"].set_value(True)

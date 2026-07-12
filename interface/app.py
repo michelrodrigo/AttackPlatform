@@ -22,6 +22,7 @@ tank_temperature = 25.0
 logs = []
 
 MAX_LEVEL_INDICATOR_HEIGHT = 190
+MAX_HEATER_INDICATOR_HEIGHT = 90
 
 # Set the logging level of the 'werkzeug' logger to 'ERROR'
 logging.getLogger('werkzeug').setLevel(logging.ERROR)
@@ -70,6 +71,11 @@ app.layout = dbc.Container(
                         dbc.Row("Mixer", style={"padding": "10px"}),
                         dbc.Button("On", id="mixer_on_button", n_clicks=0, color="success", className="me-2", style={"width": "70px", "height": "40px"}),
                         dbc.Button("Off", id="mixer_off_button", n_clicks=0, color="danger", style={"width": "70px", "height": "40px"}),
+                        dbc.Row("Heater", style={"padding": "10px"}),
+                        dbc.Button("On", id="heater_on_button", n_clicks=0, color="success", className="me-2",
+                                   style={"width": "70px", "height": "40px"}),
+                        dbc.Button("Off", id="heater_off_button", n_clicks=0, color="danger",
+                                   style={"width": "70px", "height": "40px"}),
                         html.Div(id="action-feedback", className="mt-3 text-info"),
 
                     ],
@@ -209,9 +215,32 @@ app.layout = dbc.Container(
                                         "left": "140px",
                                         "top": "100px",
                                     }
-                                )
-                                #todo: verificar o pq o nível parou de atualizar
-                                #todo: parece que o comando de ligar/desligar o mixer não está chegando no subsistema (mensagem do barramento)
+                                ),
+                                #representation of Heater
+                                html.Div(
+                                    id="heater-border",
+                                    style={
+                                        "width": "12px",
+                                        "height": "90px",
+                                        "background-color": "gray",
+                                        "position": "absolute",
+                                        "left": "224px",
+                                        "bottom": "220px",
+                                        "border": "1px solid black",
+                                    }
+                                ),
+                                html.Div(
+                                    id="heater-indicator",
+                                    style={
+                                        "width": "9px",
+                                        "height": "0px",
+                                        "background-color": "orange",
+                                        "position": "absolute",
+                                        "left": "226px",
+                                        "bottom": "220px",
+                                    },
+                                ),
+
                             ]
                         ),
                         className="mb-4",
@@ -291,9 +320,12 @@ def reset_simulation(n_clicks_reset):
      Input('output_valve_open_button', "n_clicks"),
      Input('output_valve_close_button', "n_clicks"),
      Input('mixer_on_button', "n_clicks"),
-     Input('mixer_off_button', "n_clicks")]
+     Input('mixer_off_button', "n_clicks"),
+     Input('heater_on_button', "n_clicks"),
+     Input('heater_off_button', "n_clicks")
+     ]
 )
-def control_systems(n_clicks_open_input, n_clicks_close_input, n_clicks_open_output, n_clicks_close_output, n_clicks_mixer_on, n_clicks_mixer_off):
+def control_systems(n_clicks_open_input, n_clicks_close_input, n_clicks_open_output, n_clicks_close_output, n_clicks_mixer_on, n_clicks_mixer_off, n_clicks_heater_on, n_clicks_heater_off):
     ctx = dash.callback_context
     if not ctx.triggered:
         raise dash.exceptions.PreventUpdate
@@ -343,6 +375,18 @@ def control_systems(n_clicks_open_input, n_clicks_close_input, n_clicks_open_out
             return "Mixer OFF."
         except Exception as e:
             return f"Error while turning mixer OFF: {e}"
+    elif button_id == "heater_on_button":
+        try:
+            client.set_value(heater_on_node_address, True)
+            return "Heater ON."
+        except Exception as e:
+            return f"Error while turning mixer ON: {e}"
+    elif button_id == "heater_off_button":
+        try:
+            client.set_value(heater_off_node_address, True)
+            return "Heater OFF."
+        except Exception as e:
+            return f"Error while turning heater OFF: {e}"
     return "No action."
 
 @app.callback(
@@ -603,11 +647,12 @@ def toggle_simulation(start_clicks, stop_clicks, interface_disabled):
 @app.callback(
     [Output("level-indicator", "style"),
      Output("temperature-display", "children"),
-     Output("logs", "children")],
+     Output("logs", "children"),
+     Output("heater-indicator", "style")],
     [Input("interval-component", "n_intervals")]
 )
 def update_simulation(n_intervals):
-    global simulating, tank_level, tank_temperature, logs
+    global simulating, tank_level, tank_temperature, heater_power, logs
 
     if not simulating:
         raise dash.exceptions.PreventUpdate
@@ -638,12 +683,28 @@ def update_simulation(n_intervals):
     # Atualizar temperatura no texto
     temperature_text = f"Temp: {tank_temperature:.2f} °C"
 
+    new_heater_power = client.read_value(heater_power_node_address)
+    if new_heater_power is not None:
+        heater_power = new_heater_power
+
+    # Atualizar nível heater power
+    heater_power_height = MAX_HEATER_INDICATOR_HEIGHT * (heater_power / 100)
+    heater_style = {
+        "width": "9px",
+        "height": f"{heater_power_height}px",
+        "background-color": "orange",
+        "position": "absolute",
+        "left": "226px",
+        "bottom": "220px",
+    }
+
+
     # Adicionando log
     logs.append(f"Nível: {tank_level:.2f} L, Temperatura: {tank_temperature:.2f} °C")
     if len(logs) > 10:
         logs.pop(0)
 
-    return level_style, temperature_text, "\n".join(logs)
+    return level_style, temperature_text, "\n".join(logs), heater_style
 
 # Inicialização
 def run():
