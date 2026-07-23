@@ -66,7 +66,8 @@ class Heater(threading.Thread):
                                     self.automaton.trigger_event(command_value)
 
             if self.heating:
-                self.heater_power = round(random.uniform(0, 100), 2)
+                #self.heater_power = round(random.uniform(0, 100), 2)
+                self.heater_power = 100
 
                 # Send the message if a change is detected in Heater power
                 if self.prev_heater_power is None or self.heater_power != self.prev_heater_power:

@@ -12,7 +12,7 @@ def simulation_process(conn):
 
     # Variáveis do sistema
     nivel_tanque = 0  # Nível inicial do tanque (m)
-    temperatura_tanque = 25.0  # Temperatura inicial do tanque (°C)
+    initial_temperature = 25.0  # Temperatura inicial do tanque (°C)
     potencia_aquecedor = 0.0  # Potência do aquecedor (W)
     vazao_entrada = 0.0  # Vazão de entrada de água (m³/s)
     temperatura_entrada = 20.0  # Temperatura da água de entrada (°C)
